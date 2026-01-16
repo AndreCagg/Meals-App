@@ -4,6 +4,7 @@ import "package:meals_app/data/meal.dart";
 import "package:meals_app/data/category.dart";
 import "package:meals_app/data/favorites.dart";
 import "package:meals_app/data/ingredient.dart";
+import "package:meals_app/provider/favorites_provider.dart";
 
 class Recipe extends StatefulWidget {
   Recipe({
@@ -36,9 +37,12 @@ class Recipe extends StatefulWidget {
 }
 
 class _RecipeState extends State<Recipe> {
+  final FavoritesProvider _favoritesProvider = provider;
+  Icon starIcon = Icon(Icons.star_border);
+
   void _addFavorites(int code) {
     bool isFavorite = false;
-    if (favorites[widget.cat] == null) {
+    /*if (favorites[widget.cat] == null) {
       favorites[widget.cat] = [widget.meal.id];
     } else {
       if (!favorites[widget.cat]!.contains(widget.meal.id)) {
@@ -56,8 +60,19 @@ class _RecipeState extends State<Recipe> {
           widget.updateFavorites!(favorites);
         }
       }
-    }
 
+    }*/
+
+    isFavorite = _favoritesProvider.manageFavorite(widget.cat, widget.meal.id);
+    if (isFavorite) {
+      setState(() {
+        starIcon = Icon(Icons.star);
+      });
+    } else {
+      setState(() {
+        starIcon = Icon(Icons.star_border);
+      });
+    }
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -67,18 +82,24 @@ class _RecipeState extends State<Recipe> {
       ),
     );
 
-    setState(() {
+    /*setState(() {
       favorites = favorites;
-    });
+    });*/
   }
 
   @override
   Widget build(BuildContext context) {
-    Icon star = Icon(Icons.star);
-    if (favorites[widget.cat] == null ||
-        !favorites[widget.cat]!.contains(widget.meal.id)) {
+    //Icon starIcon = Icon(Icons.star);
+    /*if (_favoritesProvider.favorites.isEmpty ||
+        _favoritesProvider.favorites[widget.cat] == null ||
+        !_favoritesProvider.favorites[widget.cat]!.contains(widget.meal.id)) {
       //piatto preferito
-      star = Icon(Icons.star_border);
+      starIcon = Icon(Icons.star_border);
+    }*/
+    if (_favoritesProvider.favorites.isNotEmpty &&
+        _favoritesProvider.favorites[widget.cat] != null &&
+        _favoritesProvider.favorites[widget.cat]!.contains(widget.meal.id)) {
+      starIcon = Icon(Icons.star);
     }
 
     return Scaffold(
@@ -89,7 +110,7 @@ class _RecipeState extends State<Recipe> {
             onPressed: () {
               _addFavorites(widget.meal.id);
             },
-            icon: star,
+            icon: starIcon,
           ),
         ],
       ),

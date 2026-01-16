@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:meals_app/provider/favorites_provider.dart";
 import "package:meals_app/widget/meal_card.dart";
 import "package:meals_app/data/categories.dart";
 import "package:meals_app/data/category.dart";
@@ -20,7 +21,7 @@ class CategoryMeals extends StatefulWidget {
     if (!openFavorites) {
       meals = c.collection;
     } else {
-      for (int mealCode in favorites[c.code]!) {
+      for (int mealCode in provider.favorites[c.code]!) {
         meals[mealCode] = c.collection[mealCode]!;
       }
     }
