@@ -11,6 +11,7 @@ class Recipe extends StatefulWidget {
     required this.titolo,
     required this.cat,
     required this.id,
+    this.updateFavorites,
   }) {
     Category? category = categories[cat];
     Map<int, Meal> meals = category!.collection;
@@ -27,6 +28,7 @@ class Recipe extends StatefulWidget {
   Meal meal = Meal(0, "", "", [], "");
   List<Ingredient> ingredients = [];
   String procedimento = "";
+  void Function(Map<int, List<int>>)? updateFavorites;
 
   State<Recipe> createState() {
     return _RecipeState();
@@ -36,11 +38,24 @@ class Recipe extends StatefulWidget {
 class _RecipeState extends State<Recipe> {
   void _addFavorites(int code) {
     bool isFavorite = false;
-    if (favorites[widget.meal.id] == null) {
-      favorites[code] = widget.meal;
-      isFavorite = true;
+    if (favorites[widget.cat] == null) {
+      favorites[widget.cat] = [widget.meal.id];
     } else {
-      favorites.remove(code);
+      if (!favorites[widget.cat]!.contains(widget.meal.id)) {
+        favorites[widget.cat]!.add(widget.meal.id);
+        isFavorite = true;
+      } else {
+        //rimuoverlo
+        favorites[widget.cat]!.remove(widget.meal.id);
+
+        if (favorites[widget.cat]!.isEmpty) {
+          favorites.remove(widget.cat);
+        }
+
+        if (widget.updateFavorites != null) {
+          widget.updateFavorites!(favorites);
+        }
+      }
     }
 
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -59,10 +74,11 @@ class _RecipeState extends State<Recipe> {
 
   @override
   Widget build(BuildContext context) {
-    Icon star = Icon(Icons.star_border);
-    if (favorites[widget.meal.id] != null) {
+    Icon star = Icon(Icons.star);
+    if (favorites[widget.cat] == null ||
+        !favorites[widget.cat]!.contains(widget.meal.id)) {
       //piatto preferito
-      star = Icon(Icons.star);
+      star = Icon(Icons.star_border);
     }
 
     return Scaffold(

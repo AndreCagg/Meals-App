@@ -1,6 +1,9 @@
+import "dart:math";
+
 import "package:flutter/material.dart";
 import "package:meals_app/data/favorites.dart";
-import "package:meals_app/data/meal.dart";
+import "package:meals_app/data/categories.dart";
+import "package:meals_app/widget/category_card.dart";
 
 class Preferiti extends StatefulWidget {
   const Preferiti({super.key});
@@ -11,11 +14,17 @@ class Preferiti extends StatefulWidget {
 }
 
 class _PreferitiState extends State<Preferiti> {
+  void aggiornaPreferiti(newFavorites) {
+    setState(() {
+      favorites = newFavorites;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Meal> favoritesList = favorites.values.toList();
+    List<int> favoritesCategoriesList = favorites.keys.toList();
 
-    if (favoritesList.isEmpty) {
+    if (favoritesCategoriesList.isEmpty) {
       return Center(
         child: Text(
           ":(( Come fa a non piacerti nulla?!",
@@ -23,10 +32,20 @@ class _PreferitiState extends State<Preferiti> {
         ),
       );
     } else {
-      return ListView.builder(
-        itemCount: favoritesList.length,
+      return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        itemCount: favoritesCategoriesList.length,
         itemBuilder: (context, index) {
-          return Text(favoritesList[index].descrizione);
+          //mealscard
+          //ottieni categoria
+          return CategoryCard(
+            code: favoritesCategoriesList[index],
+            category: categories[favoritesCategoriesList[index]]!.nome,
+            openFavorites: true,
+            updateFavorites: aggiornaPreferiti,
+          );
         },
       );
     }

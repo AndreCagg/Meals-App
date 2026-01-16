@@ -3,26 +3,34 @@ import "package:meals_app/widget/meal_card.dart";
 import "package:meals_app/data/categories.dart";
 import "package:meals_app/data/category.dart";
 import "package:meals_app/data/meal.dart";
+import "package:meals_app/data/favorites.dart";
 
 class CategoryMeals extends StatefulWidget {
   CategoryMeals({super.key});
 
-  CategoryMeals.Category({super.key, required this.category}) {
-    Category? c = categories[category]; /*.firstWhere((cat) {
-      if (cat.descrizione == this.category) {
-        return true;
-      }
-
-      return false;
-    });*/
+  CategoryMeals.Category({
+    super.key,
+    required this.category,
+    this.openFavorites = false,
+    this.updateFavorites,
+  }) {
+    Category? c = categories[category];
 
     categoryStr = c!.descrizione;
-    meals = c.collection;
+    if (!openFavorites) {
+      meals = c.collection;
+    } else {
+      for (int mealCode in favorites[c.code]!) {
+        meals[mealCode] = c.collection[mealCode]!;
+      }
+    }
   }
 
   int category = 0;
   String categoryStr = "";
   Map<int, Meal> meals = {};
+  bool openFavorites = false;
+  void Function(Map<int, List<int>>)? updateFavorites;
 
   State<CategoryMeals> createState() {
     return _CategoryMealsState();
@@ -44,6 +52,7 @@ class _CategoryMealsState extends State<CategoryMeals> {
               id: mealsList[index].id,
               image: mealsList[index].url,
               descrizione: mealsList[index].descrizione,
+              updateFavorites: widget.updateFavorites,
             );
           },
         ),

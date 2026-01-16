@@ -10,12 +10,14 @@ class MealCard extends StatefulWidget {
     required this.id,
     required this.image,
     required this.descrizione,
+    this.updateFavorites,
   });
 
   final int category;
   final int id;
   final String image;
   final String descrizione;
+  final void Function(Map<int, List<int>>)? updateFavorites;
 
   State<MealCard> createState() {
     return _MealCardState();
@@ -28,10 +30,11 @@ class _MealCardState extends State<MealCard> {
       MaterialPageRoute(
         builder: (context) {
           return Recipe(
-            key: ValueKey(titolo),
+            key: ValueKey(id),
             titolo: titolo,
             cat: category,
             id: id,
+            updateFavorites: widget.updateFavorites,
           );
         },
       ),
