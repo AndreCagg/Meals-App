@@ -1,4 +1,3 @@
-import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:flutter/material.dart";
 
 class FavoritesProvider extends ChangeNotifier {
@@ -33,6 +32,16 @@ class FavoritesProvider extends ChangeNotifier {
       _favorites.remove(category);
     }
     notifyListeners();
+  }
+
+  bool isFavorite(int category, int meal) {
+    if (_favorites.isNotEmpty &&
+        _favorites[category] != null &&
+        _favorites[category]!.contains(meal)) {
+      return true;
+    }
+
+    return false;
   }
 }
 

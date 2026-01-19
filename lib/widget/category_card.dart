@@ -28,7 +28,7 @@ class _CategoryCardState extends State<CategoryCard> {
           return CategoryMeals.Category(
             category: code,
             openFavorites: widget.openFavorites,
-            updateFavorites: widget.updateFavorites,
+            //updateFavorites: widget.updateFavorites,
           );
         },
       ),

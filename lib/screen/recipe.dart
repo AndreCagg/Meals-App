@@ -5,6 +5,7 @@ import "package:meals_app/data/category.dart";
 import "package:meals_app/data/favorites.dart";
 import "package:meals_app/data/ingredient.dart";
 import "package:meals_app/provider/favorites_provider.dart";
+import "package:provider/provider.dart";
 
 class Recipe extends StatefulWidget {
   Recipe({
@@ -12,7 +13,7 @@ class Recipe extends StatefulWidget {
     required this.titolo,
     required this.cat,
     required this.id,
-    this.updateFavorites,
+    //this.updateFavorites,
   }) {
     Category? category = categories[cat];
     Map<int, Meal> meals = category!.collection;
@@ -29,7 +30,7 @@ class Recipe extends StatefulWidget {
   Meal meal = Meal(0, "", "", [], "");
   List<Ingredient> ingredients = [];
   String procedimento = "";
-  void Function(Map<int, List<int>>)? updateFavorites;
+  //void Function(Map<int, List<int>>)? updateFavorites;
 
   State<Recipe> createState() {
     return _RecipeState();
@@ -37,33 +38,14 @@ class Recipe extends StatefulWidget {
 }
 
 class _RecipeState extends State<Recipe> {
-  final FavoritesProvider _favoritesProvider = provider;
   Icon starIcon = Icon(Icons.star_border);
 
   void _addFavorites(int code) {
+    final FavoritesProvider _favoritesProvider = context
+        .read<FavoritesProvider>();
     bool isFavorite = false;
-    /*if (favorites[widget.cat] == null) {
-      favorites[widget.cat] = [widget.meal.id];
-    } else {
-      if (!favorites[widget.cat]!.contains(widget.meal.id)) {
-        favorites[widget.cat]!.add(widget.meal.id);
-        isFavorite = true;
-      } else {
-        //rimuoverlo
-        favorites[widget.cat]!.remove(widget.meal.id);
-
-        if (favorites[widget.cat]!.isEmpty) {
-          favorites.remove(widget.cat);
-        }
-
-        if (widget.updateFavorites != null) {
-          widget.updateFavorites!(favorites);
-        }
-      }
-
-    }*/
-
     isFavorite = _favoritesProvider.manageFavorite(widget.cat, widget.meal.id);
+
     if (isFavorite) {
       setState(() {
         starIcon = Icon(Icons.star);
@@ -81,26 +63,12 @@ class _RecipeState extends State<Recipe> {
             : Text("Non ti piace più! :("),
       ),
     );
-
-    /*setState(() {
-      favorites = favorites;
-    });*/
   }
 
   @override
   Widget build(BuildContext context) {
-    //Icon starIcon = Icon(Icons.star);
-    /*if (_favoritesProvider.favorites.isEmpty ||
-        _favoritesProvider.favorites[widget.cat] == null ||
-        !_favoritesProvider.favorites[widget.cat]!.contains(widget.meal.id)) {
-      //piatto preferito
-      starIcon = Icon(Icons.star_border);
-    }*/
-    if (_favoritesProvider.favorites.isNotEmpty &&
-        _favoritesProvider.favorites[widget.cat] != null &&
-        _favoritesProvider.favorites[widget.cat]!.contains(widget.meal.id)) {
-      starIcon = Icon(Icons.star);
-    }
+    final FavoritesProvider _favoritesProvider = context
+        .read<FavoritesProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -110,7 +78,13 @@ class _RecipeState extends State<Recipe> {
             onPressed: () {
               _addFavorites(widget.meal.id);
             },
-            icon: starIcon,
+            icon: Consumer<FavoritesProvider>(
+              builder: (context, provider, child) {
+                return provider.isFavorite(widget.cat, widget.meal.id)
+                    ? Icon(Icons.star)
+                    : Icon(Icons.star_border);
+              },
+            ),
           ),
         ],
       ),

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "266996245018",
+    "firebase_url": "https://mealsapp-f5e42-default-rtdb.firebaseio.com",
+    "project_id": "mealsapp-f5e42",
+    "storage_bucket": "mealsapp-f5e42.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266996245018:android:b2aba2b7eaab3fb8d1a7a3",
+        "android_client_info": {
+          "package_name": "com.example.meals_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALuqxEpJADNxyybYW7d0nqXYfMi9l8jBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,6 +5,7 @@ import "package:meals_app/data/categories.dart";
 import "package:meals_app/data/category.dart";
 import "package:meals_app/data/meal.dart";
 import "package:meals_app/data/favorites.dart";
+import "package:provider/provider.dart";
 
 class CategoryMeals extends StatefulWidget {
   CategoryMeals({super.key});
@@ -13,17 +14,13 @@ class CategoryMeals extends StatefulWidget {
     super.key,
     required this.category,
     this.openFavorites = false,
-    this.updateFavorites,
+    //this.updateFavorites,
   }) {
     Category? c = categories[category];
 
     categoryStr = c!.descrizione;
     if (!openFavorites) {
       meals = c.collection;
-    } else {
-      for (int mealCode in provider.favorites[c.code]!) {
-        meals[mealCode] = c.collection[mealCode]!;
-      }
     }
   }
 
@@ -31,7 +28,7 @@ class CategoryMeals extends StatefulWidget {
   String categoryStr = "";
   Map<int, Meal> meals = {};
   bool openFavorites = false;
-  void Function(Map<int, List<int>>)? updateFavorites;
+  //void Function(Map<int, List<int>>)? updateFavorites;
 
   State<CategoryMeals> createState() {
     return _CategoryMealsState();
@@ -41,7 +38,18 @@ class CategoryMeals extends StatefulWidget {
 class _CategoryMealsState extends State<CategoryMeals> {
   @override
   Widget build(BuildContext context) {
-    var mealsList = widget.meals.values.toList(); //controlla
+    var mealsList = [];
+    if (widget.openFavorites) {
+      var _favoriteProvider = context.read<FavoritesProvider>();
+      var mealsId = _favoriteProvider.favorites[widget.category];
+
+      for (int mealId in mealsId!) {
+        mealsList.add(categories[widget.category]!.collection[mealId]);
+      }
+    } else {
+      mealsList = widget.meals.values.toList();
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.categoryStr)),
       body: Center(
@@ -53,7 +61,7 @@ class _CategoryMealsState extends State<CategoryMeals> {
               id: mealsList[index].id,
               image: mealsList[index].url,
               descrizione: mealsList[index].descrizione,
-              updateFavorites: widget.updateFavorites,
+              //updateFavorites: widget.updateFavorites,
             );
           },
         ),

@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
+import "package:meals_app/provider/favorites_provider.dart";
+import "package:provider/provider.dart";
 import "package:meals_app/widget/meal_image.dart";
 import "package:meals_app/widget/meal_text.dart";
 import "package:meals_app/screen/recipe.dart";
+import "package:provider/provider.dart";
 
 class MealCard extends StatefulWidget {
   const MealCard({
@@ -10,14 +13,14 @@ class MealCard extends StatefulWidget {
     required this.id,
     required this.image,
     required this.descrizione,
-    this.updateFavorites,
+    //this.updateFavorites,
   });
 
   final int category;
   final int id;
   final String image;
   final String descrizione;
-  final void Function(Map<int, List<int>>)? updateFavorites;
+  //final void Function(Map<int, List<int>>)? updateFavorites;
 
   State<MealCard> createState() {
     return _MealCardState();
@@ -34,7 +37,7 @@ class _MealCardState extends State<MealCard> {
             titolo: titolo,
             cat: category,
             id: id,
-            updateFavorites: widget.updateFavorites,
+            //updateFavorites: widget.updateFavorites,
           );
         },
       ),
